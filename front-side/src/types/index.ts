@@ -123,7 +123,7 @@ export interface CreateFilme {
 }
 export interface CreateSessao { horarioExibicao: string; filmeId: number; salaId: number; cinemaId: number }
 export interface CreateIngresso { valorInteira: number; valorMeia: number; sessaoId: number }
-export interface CreatePedido { qtInteira: number; qtMeia: number; valorTotal: number; ingressoIds?: number[] }
+export interface CreatePedido { qtInteira: number; qtMeia: number; valorTotal: number; ingressoIds: number[] }
 export interface CreateLanche { nome: string; descricao: string; valorUnitario: number; qtUnidade: number; subtotal: number; pedidoId: number }
 
 // Update DTOs (all fields optional)

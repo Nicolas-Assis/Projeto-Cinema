@@ -19,7 +19,12 @@ export class PedidoService {
   }
 
   findAll() {
-    return this.prisma.pedido.findMany({ include: { ingressos: true, lanches: true } });
+    return this.prisma.pedido.findMany({
+      include: {
+        ingressos: { include: { sessao: { include: { filme: true } } } },
+        lanches: true,
+      },
+    });
   }
 
   async findOne(id: number) {

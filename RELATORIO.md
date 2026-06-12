@@ -20,8 +20,9 @@
 - **API REST (back-end):** desenvolvida em **Node.js/TypeScript com NestJS e Prisma**, conectada a um banco **PostgreSQL** e documentada com **Swagger**. Expõe os recursos de cinemas, salas, filmes, sessões, ingressos, pedidos e lanches/combos.
 - **Aplicação web (front-end):** desenvolvida em **React + TypeScript com Vite**, estilizada com **Tailwind CSS** e roteada com **React Router**. Consome a API própria (em vez de dados mockados) e oferece um catálogo interativo com operações de criar, editar, excluir, filtrar e visualizar detalhes.
 
-> 🔗 **Repositório (GitHub):** _colar o link aqui_
-> 🔗 **Deploy (Vercel):** _colar o link aqui_
+> 🔗 **Repositório (GitHub):** https://github.com/Nicolas-Assis/Projeto-Cinema
+
+> 🔗 **Deploy (Vercel):** https://projeto-cinema-git-main-nicolas-assis-projects.vercel.app/
 
 ## 2. Como chegamos ao resultado
 

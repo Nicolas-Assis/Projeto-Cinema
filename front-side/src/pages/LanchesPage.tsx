@@ -2,7 +2,8 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Plus, Coffee, Pencil, Trash2 } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { Plus, Coffee, Pencil, Trash2, ShoppingCart } from 'lucide-react'
 import { PageHeader } from '@/components/PageHeader'
 import { ConfirmDialog } from '@/components/ConfirmDialog'
 import { Button } from '@/components/ui/button'
@@ -20,11 +21,11 @@ import { formatCurrency } from '@/lib/utils'
 
 const schema = z.object({
   nome: z.string().min(1, 'Nome obrigatório'),
-  descricao: z.string().min(1, 'Descrição obrigatória'),
+  descricao: z.string().min(5, 'Descrição deve ter ao menos 5 caracteres'),
   valorUnitario: z.coerce.number().min(0.01, 'Valor obrigatório'),
   qtUnidade: z.coerce.number().int().min(1, 'Quantidade mínima: 1'),
   subtotal: z.coerce.number().min(0),
-  pedidoId: z.coerce.number().int().min(1, 'Pedido obrigatório'),
+  pedidoId: z.coerce.number().int().min(1, 'Selecione um pedido'),
 })
 type FormData = z.infer<typeof schema>
 
@@ -40,7 +41,14 @@ export default function LanchesPage() {
   const [deleteTarget, setDeleteTarget] = useState<any>(null)
   const [pedidoId, setPedidoId] = useState('')
 
-  const { register, handleSubmit, reset, setValue, watch, formState: { errors } } = useForm<FormData>({
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: { nome: '', descricao: '', valorUnitario: 0, qtUnidade: 1, subtotal: 0, pedidoId: 0 },
   })
@@ -49,13 +57,22 @@ export default function LanchesPage() {
   const qtUnidade = watch('qtUnidade')
 
   const openCreate = () => {
-    setEditing(null); setPedidoId('')
+    setEditing(null)
+    setPedidoId('')
     reset({ nome: '', descricao: '', valorUnitario: 0, qtUnidade: 1, subtotal: 0, pedidoId: 0 })
     setOpen(true)
   }
   const openEdit = (row: any) => {
-    setEditing(row); setPedidoId(String(row.pedidoId))
-    reset({ nome: row.nome, descricao: row.descricao, valorUnitario: row.valorUnitario, qtUnidade: row.qtUnidade, subtotal: row.subtotal, pedidoId: row.pedidoId })
+    setEditing(row)
+    setPedidoId(String(row.pedidoId))
+    reset({
+      nome: row.nome,
+      descricao: row.descricao,
+      valorUnitario: row.valorUnitario,
+      qtUnidade: row.qtUnidade,
+      subtotal: row.subtotal,
+      pedidoId: row.pedidoId,
+    })
     setOpen(true)
   }
 
@@ -73,12 +90,19 @@ export default function LanchesPage() {
       <PageHeader
         title="Lanches & Combos"
         description="Combos e lanches vinculados a pedidos"
-        action={<Button onClick={openCreate} className="gap-2"><Plus className="h-4 w-4" />Novo Combo</Button>}
+        action={
+          <Button onClick={openCreate} className="gap-2">
+            <Plus className="h-4 w-4" />
+            Novo Combo
+          </Button>
+        }
       />
 
       {isLoading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {Array.from({ length: 8 }).map((_, i) => <Skeleton key={i} className="h-48 rounded-lg" />)}
+          {Array.from({ length: 8 }).map((_, i) => (
+            <Skeleton key={i} className="h-48 rounded-lg" />
+          ))}
         </div>
       ) : lanches.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-24 text-muted-foreground">
@@ -88,12 +112,14 @@ export default function LanchesPage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {lanches.map(lanche => (
+          {lanches.map((lanche) => (
             <Card key={lanche.id} className="bg-card border-border hover:border-primary/50 transition-colors">
               <CardContent className="pt-5 pb-3">
                 <div className="flex items-start justify-between gap-2 mb-2">
                   <h3 className="font-semibold text-white text-sm leading-tight">{lanche.nome}</h3>
-                  <Badge variant="secondary" className="shrink-0 text-xs">Pedido #{lanche.pedidoId}</Badge>
+                  <Badge variant="secondary" className="shrink-0 text-xs">
+                    Pedido #{lanche.pedidoId}
+                  </Badge>
                 </div>
                 <p className="text-xs text-muted-foreground mb-3 line-clamp-2">{lanche.descricao}</p>
                 <div className="space-y-1 text-xs text-muted-foreground">
@@ -113,10 +139,17 @@ export default function LanchesPage() {
               </CardContent>
               <CardFooter className="pt-0 pb-3 gap-2">
                 <Button size="sm" variant="ghost" className="flex-1 h-8 text-xs" onClick={() => openEdit(lanche)}>
-                  <Pencil className="h-3.5 w-3.5 mr-1" />Editar
+                  <Pencil className="h-3.5 w-3.5 mr-1" />
+                  Editar
                 </Button>
-                <Button size="sm" variant="ghost" className="flex-1 h-8 text-xs text-destructive hover:text-destructive hover:bg-destructive/10" onClick={() => setDeleteTarget(lanche)}>
-                  <Trash2 className="h-3.5 w-3.5 mr-1" />Excluir
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="flex-1 h-8 text-xs text-destructive hover:text-destructive hover:bg-destructive/10"
+                  onClick={() => setDeleteTarget(lanche)}
+                >
+                  <Trash2 className="h-3.5 w-3.5 mr-1" />
+                  Excluir
                 </Button>
               </CardFooter>
             </Card>
@@ -137,7 +170,12 @@ export default function LanchesPage() {
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="descricao">Descrição</Label>
-              <Textarea id="descricao" {...register('descricao')} rows={2} placeholder="Ex: Pipoca grande + 2 refrigerantes" />
+              <Textarea
+                id="descricao"
+                {...register('descricao')}
+                rows={2}
+                placeholder="Ex: Pipoca grande + 2 refrigerantes"
+              />
               {errors.descricao && <p className="text-xs text-destructive">{errors.descricao.message}</p>}
             </div>
             <div className="grid grid-cols-2 gap-4">
@@ -160,21 +198,44 @@ export default function LanchesPage() {
             </div>
             <div className="space-y-1.5">
               <Label>Pedido</Label>
-              <Select value={pedidoId} onValueChange={v => { setPedidoId(v); setValue('pedidoId', Number(v)) }}>
-                <SelectTrigger><SelectValue placeholder="Selecione o pedido" /></SelectTrigger>
+              <Select
+                value={pedidoId}
+                onValueChange={(v) => {
+                  setPedidoId(v)
+                  setValue('pedidoId', Number(v), { shouldValidate: true })
+                }}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione o pedido" />
+                </SelectTrigger>
                 <SelectContent>
-                  {pedidos.map(p => (
-                    <SelectItem key={p.id} value={String(p.id)}>
-                      Pedido #{p.id} — {formatCurrency(p.valorTotal)}
-                    </SelectItem>
-                  ))}
+                  {pedidos.map((p) => {
+                    const filmes = [...new Set((p.ingressos ?? []).map((i) => i.sessao?.filme?.titulo).filter(Boolean))]
+                    return (
+                      <SelectItem key={p.id} value={String(p.id)}>
+                        Pedido #{p.id} · {filmes.length > 0 ? `${filmes.join(', ')} · ` : ''}
+                        {formatCurrency(p.valorTotal)}
+                      </SelectItem>
+                    )
+                  })}
                 </SelectContent>
               </Select>
               {errors.pedidoId && <p className="text-xs text-destructive">{errors.pedidoId.message}</p>}
+              {pedidos.length === 0 && (
+                <p className="flex items-center gap-1 text-xs text-muted-foreground">
+                  <ShoppingCart className="h-3 w-3" />
+                  Nenhum pedido disponível —{' '}
+                  <Link to="/pedidos" className="text-primary underline">
+                    crie um pedido primeiro
+                  </Link>
+                </p>
+              )}
             </div>
             <div className="flex justify-end gap-2 pt-2">
-              <Button type="button" variant="outline" onClick={() => setOpen(false)}>Cancelar</Button>
-              <Button type="submit" disabled={createMut.isPending || updateMut.isPending}>
+              <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+                Cancelar
+              </Button>
+              <Button type="submit" disabled={createMut.isPending || updateMut.isPending || pedidos.length === 0}>
                 {editing ? 'Salvar' : 'Criar'}
               </Button>
             </div>
@@ -186,7 +247,10 @@ export default function LanchesPage() {
         open={!!deleteTarget}
         title="Excluir Combo"
         description={`Tem certeza que deseja excluir "${deleteTarget?.nome}"?`}
-        onConfirm={() => { deleteMut.mutate(deleteTarget!.id); setDeleteTarget(null) }}
+        onConfirm={() => {
+          deleteMut.mutate(deleteTarget!.id)
+          setDeleteTarget(null)
+        }}
         onCancel={() => setDeleteTarget(null)}
         loading={deleteMut.isPending}
       />
