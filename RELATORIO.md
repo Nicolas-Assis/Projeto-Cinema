@@ -30,7 +30,7 @@
 3. **Geração do client tipado:** a partir do OpenAPI da API, montamos um client HTTP tipado no front (`src/lib/api-client.ts`), garantindo que front e back usem os mesmos contratos.
 4. **Construção da interface:** quebramos a interface em componentes reutilizáveis e criamos uma página por recurso, usando hooks customizados (TanStack Query) para buscar e mutar dados em tempo real.
 5. **Rotas e detalhes:** adicionamos a rota dinâmica `/filmes/:id` — ao clicar no título do card de um filme, o usuário navega para a página de detalhes daquele item — e a página institucional `/sobre`.
-6. **Preparação para produção:** parametrizamos a URL da API por variável de ambiente (`VITE_API_URL`), configuramos CORS por ambiente (`CORS_ORIGIN`), adicionamos `vercel.json` para o roteamento SPA e publicamos o projeto.
+6. **Preparação para produção:** publicamos front e API juntos na Vercel — o front como site estático e a API como serverless function no mesmo domínio (`/api/*`), com rewrites no `vercel.json` para o roteamento SPA e a URL da API resolvida automaticamente por ambiente.
 
 ## 3. Atendimento aos requisitos da prova
 
@@ -86,8 +86,11 @@ O projeto está versionado com **Git** e publicado no **GitHub**, com `.gitignor
 
 ### 3.6 Deploy
 
-- **Front-end:** publicado na **Vercel** (Root Directory `front-side`), com `VITE_API_URL` apontando para a API pública e `vercel.json` garantindo o funcionamento das rotas do React Router.
-- **API:** publicada em serviço de hospedagem Node, com `DATABASE_URL`, `PORT` e `CORS_ORIGIN` configurados por variável de ambiente.
+Front-end e API foram publicados **juntos na Vercel, em um único projeto**:
+
+- O front é servido como site estático (build do Vite) e as rotas do React Router são resolvidas por rewrites no `vercel.json`.
+- A API NestJS roda como **serverless function** no mesmo domínio, sob `/api/*` (entrada em `api/index.js`, que reaproveita o app compilado e mantém a instância em cache entre invocações).
+- Como front e API compartilham o mesmo domínio, não há necessidade de CORS em produção; a única variável de ambiente necessária é `DATABASE_URL`.
 
 ## 4. Checklist da avaliação
 

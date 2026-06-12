@@ -44,11 +44,7 @@ npm run dev         # http://localhost:5173
 
 ## ☁️ Deploy na Vercel
 
-1. Suba o repositório para o GitHub.
-2. Em [vercel.com](https://vercel.com): **Add New → Project** e importe o repositório.
-3. Em **Root Directory**, selecione `front-side` (a Vercel detecta o Vite automaticamente).
-4. Em **Environment Variables**, adicione `VITE_API_URL` apontando para a URL pública da API (ex.: deploy da API no Render/Railway).
-5. Clique em **Deploy**. O arquivo `vercel.json` já garante que as rotas do React Router funcionem ao recarregar a página.
+Front e API são publicados **juntos, em um único projeto da Vercel**, a partir da raiz do repositório: o front vira site estático e a API NestJS roda como serverless function em `/api/*`. Em produção o client HTTP usa automaticamente o mesmo domínio (`/api`), sem necessidade de CORS nem variáveis extras — basta definir `DATABASE_URL` no projeto da Vercel. Veja o [README da raiz](../README.md) para o passo a passo.
 
 ## 📁 Estrutura
 

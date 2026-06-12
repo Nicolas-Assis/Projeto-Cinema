@@ -49,10 +49,13 @@ Acesse http://localhost:5173.
 
 Detalhes completos do front-end e instruções de deploy: [`front-side/README.md`](front-side/README.md).
 
-## ☁️ Deploy
+## ☁️ Deploy (Vercel — projeto único)
 
-1. **API**: publique em um serviço Node (Render, Railway, Fly.io...). Defina `DATABASE_URL`, `PORT` e `CORS_ORIGIN` (URL do front na Vercel, ex.: `https://seu-projeto.vercel.app`).
-2. **Front**: importe o repositório na [Vercel](https://vercel.com) com **Root Directory = `front-side`** e defina `VITE_API_URL` com a URL pública da API.
+Front e API rodam **no mesmo projeto da Vercel**: o front é servido como site estático e a API NestJS roda como serverless function em `/api/*` (entrada em [`api/index.js`](api/index.js), configuração em [`vercel.json`](vercel.json)).
+
+1. Importe o repositório na [Vercel](https://vercel.com) com **Root Directory = raiz do repositório** (padrão).
+2. Em **Environment Variables**, defina apenas `DATABASE_URL` (string de conexão do PostgreSQL).
+3. Deploy. O site abre em `/` e a API responde em `/api/filme`, `/api/cinema` etc. — mesmo domínio, sem CORS.
 
 ## 📁 Estrutura
 

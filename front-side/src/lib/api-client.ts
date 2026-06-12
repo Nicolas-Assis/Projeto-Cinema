@@ -4,7 +4,11 @@ import type {
   UpdateCinema, UpdateSala, UpdateFilme, UpdateSessao, UpdateIngresso, UpdatePedido, UpdateLanche,
 } from '@/types'
 
-const BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:3001'
+// Em produção (Vercel) a API roda no mesmo domínio, sob /api.
+// Em desenvolvimento, aponta para o NestJS local (ou VITE_API_URL).
+const BASE =
+  import.meta.env.VITE_API_URL ??
+  (import.meta.env.PROD ? '/api' : 'http://localhost:3001')
 
 async function api<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(BASE + path, {
